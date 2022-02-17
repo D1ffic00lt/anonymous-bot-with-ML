@@ -1,0 +1,4 @@
+langdetect==1.0.9
+nltk==3.7
+pandas
+scikit-learn==1.0.2
