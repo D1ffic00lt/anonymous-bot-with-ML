@@ -1,3 +1,5 @@
 configure.py
 console.bat
 server.bat
+.idea/
+__pycache__/
