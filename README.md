@@ -21,43 +21,18 @@ File or folder name  | Contents of a file or folder
 [ModelLibrary/models/RussianVectorizer.bf](ModelLibrary/models/RussianVectorizer.bf) | Russian vectorizer
 [ModelLibrary/predict.py](ModelLibrary/predict.py) | Toxicity predictor code
 
-An example of using the program
+# An example of using the program
 ```Python
-import pickle
-from ModelLibrary.predict import GetToxicity
+import pickle                                                                        # Loading library for reading models
+from ModelLibrary.predict import GetToxicity                                         # Loading the training program
 
-with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \
-        open("ModelLibrary/models/RussianModel.bf", "rb") as RussianModel:
-    models_ = [pickle.load(RussianModel), pickle.load(EnglishModel)]
+with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \            # Loading Models
+        open("ModelLibrary/models/RussianModel.bf", "rb") as RussianModel:           # Loading Models
+    models_ = [pickle.load(RussianModel), pickle.load(EnglishModel)]                 # Loading Models
 
-with open("ModelLibrary/models/RussianVectorizer.bf", "rb") as RussianVectorizer, \
-        open("ModelLibrary/models/EnglishVectorizer.bf", "rb") as EnglishVectorizer:
-    vectorizers_ = [pickle.load(RussianVectorizer), pickle.load(EnglishVectorizer)]
+with open("ModelLibrary/models/RussianVectorizer.bf", "rb") as RussianVectorizer, \  # Loading vectorizers
+        open("ModelLibrary/models/EnglishVectorizer.bf", "rb") as EnglishVectorizer: # Loading vectorizers
+    vectorizers_ = [pickle.load(RussianVectorizer), pickle.load(EnglishVectorizer)]  # Loading vectorizers
 
-print(GetToxicity("ПРИВЕТ КАК ДЕЛА&", models=models_, vectorizers=vectorizers_))
-```
-
-#### Loading library for reading models
-```Python
-import pickle
-```
-#### Downloading the training program
-```Python
-from ModelLibrary.predict import GetToxicity
-```
-#### Loading Models
-```Python
-with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \
-        open("ModelLibrary/models/RussianModel.bf", "rb") as RussianModel:
-    models_ = [pickle.load(RussianModel), pickle.load(EnglishModel)]
-```
-#### Loading vectorizers
-```Python
-with open("ModelLibrary/models/RussianVectorizer.bf", "rb") as RussianVectorizer, \
-        open("ModelLibrary/models/EnglishVectorizer.bf", "rb") as EnglishVectorizer:
-    vectorizers_ = [pickle.load(RussianVectorizer), pickle.load(EnglishVectorizer)]
-```
-#### Toxicity prediction
-```Python
-print(GetToxicity("ПРИВЕТ КАК ДЕЛА&", models=models_, vectorizers=vectorizers_))
+print(GetToxicity("ПРИВЕТ КАК ДЕЛА&", models=models_, vectorizers=vectorizers_))     # Toxicity prediction
 ```
