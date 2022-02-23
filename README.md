@@ -1,4 +1,4 @@
-# anonymous-bot-with-ML
+# Machine learning model for toxicity determination
 [![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML/tree/model)
 ## Description of files and folders
 File or folder name  | Contents of a file or folder
