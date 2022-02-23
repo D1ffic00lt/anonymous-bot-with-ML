@@ -1,7 +1,7 @@
 # anonymous-bot-with-ML
 ```Python
-from ModelLibrary.predict import GetToxicity
 import pickle
+from ModelLibrary.predict import GetToxicity
 
 with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \
         open("ModelLibrary/models/RussianModel.bf", "rb") as RussianModel:
