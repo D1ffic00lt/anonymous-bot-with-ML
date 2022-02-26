@@ -20,17 +20,18 @@ File or folder name  | Contents of a file or folder
 [ModelLibrary/models/EnglishVectorizer.bf](ModelLibrary/models/EnglishVectorizer.bf) | English vectorizer
 [ModelLibrary/models/RussianVectorizer.bf](ModelLibrary/models/RussianVectorizer.bf) | Russian vectorizer
 [ModelLibrary/predict.py](ModelLibrary/predict.py) | Toxicity predictor code
+[requirements.txt](requirements.txt) | Libraries file 
 
 # An example of using the program
 ```Python
 import pickle                                                                        # Loading library for reading models
 from ModelLibrary.predict import GetToxicity                                         # Loading the training program
 
-with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \            # Loading Models
+with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel,              # Loading Models
         open("ModelLibrary/models/RussianModel.bf", "rb") as RussianModel:           # Loading Models
     models_ = [pickle.load(RussianModel), pickle.load(EnglishModel)]                 # Loading Models
 
-with open("ModelLibrary/models/RussianVectorizer.bf", "rb") as RussianVectorizer, \  # Loading vectorizers
+with open("ModelLibrary/models/RussianVectorizer.bf", "rb") as RussianVectorizer,    # Loading vectorizers
         open("ModelLibrary/models/EnglishVectorizer.bf", "rb") as EnglishVectorizer: # Loading vectorizers
     vectorizers_ = [pickle.load(RussianVectorizer), pickle.load(EnglishVectorizer)]  # Loading vectorizers
 
