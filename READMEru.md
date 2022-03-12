@@ -1,6 +1,8 @@
 # Модель машинного обучения для определения токсичности
 [![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML/tree/model)
+___
 [English](README.md) | [Русский](READMEru.md)
+___
 Данная модель предназначена для определения уровня токсичности предложений на русском и английском языках.
 ## Описание файлов и папок
 Имя файла или папки  | Содержимое файла или папки
