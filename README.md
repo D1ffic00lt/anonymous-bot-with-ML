@@ -1,6 +1,8 @@
 # Machine learning model for toxicity determination
 [![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML/tree/model)
-This model is designed to determine the level of toxicity of sentences in Russian and English.## Description of files and folders
+[English](README.md) | [Русский](READMEru.md)
+This model is designed to determine the level of toxicity of sentences in Russian and English.
+## Description of files and folders
 File or folder name  | Contents of a file or folder
 ----------------|----------------------
 [EnglishToxicModel](EnglishToxicModel) | Folder with code for creating a model for learning in English words
