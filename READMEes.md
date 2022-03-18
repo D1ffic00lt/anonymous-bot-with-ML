@@ -1,7 +1,7 @@
 # Modelo de aprendizaje automático para la determinación de toxicidad
 [![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML/tree/model)
 
-[English](README.md) | [Русский](READMEru.md)
+[English](README.md) | [Русский](READMEru.md) | [Español](READMEes.md)
 
 Este modelo está diseñado para determinar el nivel de toxicidad de las oraciones en ruso e inglés.
 ## Descripción de archivos y carpetas
