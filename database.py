@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class Database:
     def __init__(self, database_file):
         self.connection = sqlite3.connect(database_file, check_same_thread=False)
@@ -7,12 +8,11 @@ class Database:
 
     def add_queue(self, chat_id, gender):
         with self.connection:
-            return self.cursor.execute("INSERT INTO `queue` (`chat_id`, `gender`) VALUES (?,?)", (chat_id, gender))
+            return self.cursor.execute("INSERT INTO `queue` (`chat_id`, `gender`) VALUES (?, ?)", (chat_id, gender))
 
     def delete_queue(self, chat_id):
         with self.connection:
             return self.cursor.execute("DELETE FROM `queue` WHERE `chat_id` = ?", (chat_id,))
-
 
     def delete_chat(self, id_chat):
         with self.connection:
@@ -21,7 +21,7 @@ class Database:
     def set_gender(self, chat_id, gender):
         with self.connection:
             user = self.cursor.execute("SELECT * FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany(1)
-            if bool(len(user)) == False:
+            if bool(len(user)) is False:
                 self.cursor.execute("INSERT INTO `users` (`chat_id`, `gender`) VALUES (?,?)", (chat_id, gender))
                 return True
             else:
@@ -46,11 +46,10 @@ class Database:
             else:
                 return False
 
-
     def get_chat(self):
         with self.connection:
             chat = self.cursor.execute("SELECT * FROM `queue`", ()).fetchmany(1)
-            if(bool(len(chat))):
+            if bool(len(chat)):
                 for row in chat:
                     user_info = [row[1], row[2]]
                     return user_info
@@ -62,10 +61,10 @@ class Database:
             if chat_two != 0:
                 # создание чата
                 self.cursor.execute("DELETE FROM `queue` WHERE `chat_id` = ?", (chat_two,))
-                self.cursor.execute("INSERT INTO `chats` (`chat_one`, `chat_two`) VALUES (?,?)", (chat_one, chat_two,))
+                self.cursor.execute("INSERT INTO `chats` (`chat_one`, `chat_two`) VALUES (?, ?)", (chat_one, chat_two,))
                 return True
             else:
-                #становимся в очередь
+                # становимся в очередь
                 return False
 
     def get_active_chat(self, chat_id):
@@ -86,3 +85,18 @@ class Database:
                     return chat_info
             else:
                 return chat_info
+
+    def change_rating(self, chat_id, rating):
+        with self.connection:
+            return self.cursor.execute("UPDATE `users` SET `rating` = `rating` + ? WHERE `chat_id` = ?", (rating, chat_id))
+
+    def is_register(self, chat_id):
+        with self.connection:
+            if self.cursor.execute("SELECT * FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany() == []:
+                return False
+            return True
+
+    def restart(self):
+        with self.connection:
+            self.cursor.execute("DELETE FROM `queue`")
+            self.cursor.execute("DELETE FROM `chats`")
