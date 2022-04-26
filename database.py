@@ -100,3 +100,7 @@ class Database:
         with self.connection:
             self.cursor.execute("DELETE FROM `queue`")
             self.cursor.execute("DELETE FROM `chats`")
+
+    def get_rating(self, id_):
+        with self.connection:
+            return self.cursor.execute("SELECT rating FROM users WHERE chat_id = ?", (id_,)).fetchmany()[0]
