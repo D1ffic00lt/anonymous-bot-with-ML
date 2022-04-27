@@ -1,5 +1,8 @@
 configure.py
 console.bat
 server.bat
+'db.db'
+db.db
+.DS_Store
 .idea/
 __pycache__/

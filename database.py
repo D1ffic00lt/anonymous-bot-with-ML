@@ -5,6 +5,24 @@ class Database:
     def __init__(self, database_file):
         self.connection = sqlite3.connect(database_file, check_same_thread=False)
         self.cursor = self.connection.cursor()
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+            id INTEGER NOT NULL,
+            chat_id VARCHAR (255) NOT NULL,
+            gender VARCHAR (60),
+            rating INTEGER DEFAULT 1000,
+            PRIMARY KEY (id)
+            )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS queue (
+        id INTEGER,
+        chat_id VARCHAR (255) NOT NULL,
+        gender VARCHAR (60),
+        PRIMARY KEY (id)
+        )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS chats (
+        id INTEGER,
+        chat_one VARCHAR (255) NOT NULL,
+        chat_two VARCHAR (255) NOT NULL
+        )""")
 
     def add_queue(self, chat_id, gender):
         with self.connection:
@@ -88,11 +106,12 @@ class Database:
 
     def change_rating(self, chat_id, rating):
         with self.connection:
-            return self.cursor.execute("UPDATE `users` SET `rating` = `rating` + ? WHERE `chat_id` = ?", (rating, chat_id))
+            return self.cursor.execute("UPDATE `users` SET `rating` = `rating` + ? WHERE `chat_id` = ?",
+                                       (rating, chat_id))
 
     def is_register(self, chat_id):
         with self.connection:
-            if self.cursor.execute("SELECT * FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany() == []:
+            if not self.cursor.execute("SELECT * FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany():
                 return False
             return True
 
@@ -104,3 +123,10 @@ class Database:
     def get_rating(self, id_):
         with self.connection:
             return self.cursor.execute("SELECT rating FROM users WHERE chat_id = ?", (id_,)).fetchmany()[0]
+
+    def add_rating(self):
+        for i in self.cursor.execute("SELECT chat_id FROM users WHERE rating < 500").fetchall():
+            with self.connection:
+                self.cursor.execute("UPDATE users SET rating = rating + 200 WHERE chat_id = ?", (i[0], ))
+
+
