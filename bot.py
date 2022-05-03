@@ -98,9 +98,10 @@ def stop(message):
 
         db.change_rating(message.chat.id, rating[str(message.chat.id)])
         db.change_rating(chat_info[1], rating[str(chat_info[1])])
-
-        del rating[str(message.chat.id)]
-        del rating[str(chat_info[1])]
+        if str(message.chat.id) in rating.keys():
+            del rating[str(message.chat.id)]
+        if str(chat_info[1]) in rating.keys():
+            del rating[str(chat_info[1])]
     else:
         markup2 = types.ReplyKeyboardMarkup(resize_keyboard=True)
         markup2.add(types.KeyboardButton('Парень🙍‍♂'),
@@ -217,7 +218,7 @@ def bot_message(message):
                             db.add_queue(message.chat.id, db.get_gender(message.chat.id))
                             client.send_message(message.chat.id, '🔎Поиск собеседника🔎🤖', reply_markup=stop_search())
                         else:
-                            mess = 'Собеседник найден! Чтобы остановить диалог, напишите /stop'
+                            mess = 'Собеседник найден! Чтобы остановить диалог, напишите /stop 🤖'
 
                             client.send_message(message.chat.id, mess, reply_markup=stop_dialog())
                             client.send_message(chat_two, mess, reply_markup=stop_dialog())
@@ -230,25 +231,24 @@ def bot_message(message):
                     chat_info = db.get_active_chat(message.chat.id)
                     if message.from_user.username and chat_info is not False:
                         client.send_message(chat_info[1], '@' + message.from_user.username)
-                        client.send_message(message.chat.id, 'Вы сказали свой профиль',
+                        client.send_message(message.chat.id, 'Вы сказали свой профиль 🤖',
                                             reply_markup=stop_dialog_when_say())
                     else:
-                        client.send_message(message.chat.id, 'В вашем аккаунте не указан username')
+                        client.send_message(message.chat.id, 'В вашем аккаунте не указан username! 🤖')
                 else:
-                    if "🤖" in message.text or message.chat.id in []:  # админы > обычные люди
+                    if "🤖" in message.text and message.chat.id not in [453169809, 1021375877]:  # админы > обычные люди
                         client.send_message(message.chat.id, "Вы не можете использовать \"🤖\" в своих сообщениях!")
                     else:
-                        if chat_info is not False:
+                        if chat_info is not False and str(message.chat.id) in rating.keys():
                             chat_info = db.get_active_chat(message.chat.id)
                             client.send_message(chat_info[1], message.text)
                             try:
                                 toxicity = GetToxicity(message.text, models=models_, vectorizers=vectorizers_)[1]
-                                toxicity_score = 70 - (toxicity * 100) if toxicity < 0.6 else 40 - (toxicity * 100)
-                                rating[str(message.chat.id)] += toxicity_score
                             except LangDetectException:
                                 pass
-                            except KeyError:
-                                pass
+                            else:
+                                toxicity_score = 70 - (toxicity * 100) if toxicity < 0.6 else 40 - (toxicity * 100)
+                                rating[str(message.chat.id)] += toxicity_score
 
     month = int(datetime.today().strftime('%m'))
     day = int(datetime.today().strftime('%d'))
@@ -349,7 +349,7 @@ def callback_worker(call):
     if call.data != "search":
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(text='Поиск собеседника', callback_data='search'))
-        client.edit_message_text(chat_id=call.from_user.id, message_id=call.message.id, text="Жалоба отправлена",
+        client.edit_message_text(chat_id=call.from_user.id, message_id=call.message.id, text="Жалоба отправлена 🤖",
                                  reply_markup=markup)
         db.add_report(call.data, int(last_dialogs[str(call.from_user.id)]))
     else:
