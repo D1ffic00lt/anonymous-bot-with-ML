@@ -14,6 +14,12 @@ def stop_dialog():
     return markup
 
 
+def stop_dialog_when_say():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(types.KeyboardButton('/stop'))
+    return markup
+
+
 def next_dialog():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add(types.KeyboardButton('🔎Следующий собеседник🔎'))
@@ -25,3 +31,12 @@ def stop_search():
     markup.add(types.KeyboardButton('Остановить поиск'))
     return markup
 
+
+def ignore_exceptions(func):
+    def temp(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(e)
+
+    return temp

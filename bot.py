@@ -34,6 +34,7 @@ with open("ModelLibrary/models/EnglishModel.bf", "rb") as EnglishModel, \
 print("Bot connected")
 
 
+@ignore_exceptions
 @client.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -43,6 +44,7 @@ def start(message):
                                          'Укажите ваш пол. 🤖', reply_markup=markup)
 
 
+@ignore_exceptions
 @client.message_handler(commands=["set_rating"])
 def set_rating(message):
     if message.chat.id in [453169809, 1021375877]:  # админы > обычные люди
@@ -54,6 +56,7 @@ def set_rating(message):
                 db.set_rating(chat_info[1], int(message.text.split()[1]))
 
 
+@ignore_exceptions
 @client.message_handler(commands=['help'])
 def __help(message):
     client.send_message(message.chat.id, f'Привет, {message.from_user.first_name}! '
@@ -61,6 +64,7 @@ def __help(message):
                                          'Укажите ваш пол. 🤖', reply_markup=main_menu())
 
 
+@ignore_exceptions
 @client.message_handler(commands=['menu'])
 def menu(message):
     client.send_message(message.chat.id, '···МЕНЮ···\n'
@@ -70,21 +74,8 @@ def menu(message):
                                          f'Рейтинг: {db.get_rating(message.chat.id)[0]:.4f}\n'
                                          f'/help - помощь в использовании бота 🤖', reply_markup=next_dialog())
 
-    @client.callback_query_handler(func=lambda call: True)
-    def callback_work(call):
-        if call.data == 'search':
-            if not db.is_register(call.from_user.id) and message.text != '/start':
-                client.send_message(call.from_user.id, 'Вы не зарегистрировались! Напишите /start для регистрации! 🤖')
-            else:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                markup.add(types.KeyboardButton('Парень🙍‍♂'),
-                           types.KeyboardButton('Девушка🙍‍♀'),
-                           types.KeyboardButton('Поиск среди всех🎲'))
 
-                client.send_message(call.from_user.id, 'Кого искать? 🤖', reply_markup=markup)
-        client.answer_callback_query(callback_query_id=call.id)
-
-
+@ignore_exceptions
 @client.message_handler(commands=['stop'])
 def stop(message):
     chat_info = db.get_active_chat(message.chat.id)
@@ -107,11 +98,9 @@ def stop(message):
 
         db.change_rating(message.chat.id, rating[str(message.chat.id)])
         db.change_rating(chat_info[1], rating[str(chat_info[1])])
-        try:
-            del rating[str(message.chat.id)]
-            del rating[str(chat_info[1])]
-        except IndexError:
-            pass
+
+        del rating[str(message.chat.id)]
+        del rating[str(chat_info[1])]
     else:
         markup2 = types.ReplyKeyboardMarkup(resize_keyboard=True)
         markup2.add(types.KeyboardButton('Парень🙍‍♂'),
@@ -121,6 +110,7 @@ def stop(message):
                             reply_markup=markup2)
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['text'])
 def bot_message(message):
     if message.chat.type == 'private':
@@ -238,23 +228,27 @@ def bot_message(message):
             else:
                 if message.text == 'Сказать свой профиль':
                     chat_info = db.get_active_chat(message.chat.id)
-                    if message.from_user.username:
+                    if message.from_user.username and chat_info is not False:
                         client.send_message(chat_info[1], '@' + message.from_user.username)
-                        client.send_message(message.chat.id, 'Вы сказали свой профиль')
+                        client.send_message(message.chat.id, 'Вы сказали свой профиль',
+                                            reply_markup=stop_dialog_when_say())
                     else:
                         client.send_message(message.chat.id, 'В вашем аккаунте не указан username')
                 else:
                     if "🤖" in message.text or message.chat.id in []:  # админы > обычные люди
                         client.send_message(message.chat.id, "Вы не можете использовать \"🤖\" в своих сообщениях!")
                     else:
-                        chat_info = db.get_active_chat(message.chat.id)
-                        client.send_message(chat_info[1], message.text)
-                        try:
-                            toxicity = GetToxicity(message.text, models=models_, vectorizers=vectorizers_)[1]
-                            toxicity_score = 70 - (toxicity * 100) if toxicity < 0.6 else 40 - (toxicity * 100)
-                            rating[str(message.chat.id)] += toxicity_score
-                        except LangDetectException:
-                            pass
+                        if chat_info is not False:
+                            chat_info = db.get_active_chat(message.chat.id)
+                            client.send_message(chat_info[1], message.text)
+                            try:
+                                toxicity = GetToxicity(message.text, models=models_, vectorizers=vectorizers_)[1]
+                                toxicity_score = 70 - (toxicity * 100) if toxicity < 0.6 else 40 - (toxicity * 100)
+                                rating[str(message.chat.id)] += toxicity_score
+                            except LangDetectException:
+                                pass
+                            except KeyError:
+                                pass
 
     month = int(datetime.today().strftime('%m'))
     day = int(datetime.today().strftime('%d'))
@@ -280,6 +274,7 @@ def bot_message(message):
                 }, outfile)
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['sticker'])
 def bot_stickers(message):
     if message.chat.type == 'private':
@@ -290,6 +285,7 @@ def bot_stickers(message):
             client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['voice'])
 def bot_voice(message):
     if message.chat.type == 'private':
@@ -300,6 +296,7 @@ def bot_voice(message):
             client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['document'])
 def bot_document(message):
     if message.chat.type == 'private':
@@ -310,6 +307,7 @@ def bot_document(message):
             client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['video'])
 def bot_video(message):
     if message.chat.type == 'private':
@@ -320,6 +318,7 @@ def bot_video(message):
             client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
 
 
+@ignore_exceptions
 @client.message_handler(content_types=['photo'])
 def bot_photo(message):
     with lock:
@@ -327,13 +326,31 @@ def bot_photo(message):
             chat_info = db.get_active_chat(message.chat.id)
             if chat_info is not False:
                 client.send_photo(chat_info[1], message.photo[0].file_id)
+                print(message)
             else:
                 client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
 
 
+@ignore_exceptions
+@client.message_handler(content_types=['video_note'])
+def bot_video_note(message):
+    with lock:
+        if message.chat.type == 'private':
+            chat_info = db.get_active_chat(message.chat.id)
+            if chat_info is not False:
+                client.send_video_note(chat_info[1], message.video_note.file_id)
+            else:
+                client.send_message(message.chat.id, '⛔Вы не начали диалог! Нажмите /menu для начала общения! 🤖')
+
+
+@ignore_exceptions
 @client.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data != "search":
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton(text='Поиск собеседника', callback_data='search'))
+        client.edit_message_text(chat_id=call.from_user.id, message_id=call.message.id, text="Жалоба отправлена",
+                                 reply_markup=markup)
         db.add_report(call.data, int(last_dialogs[str(call.from_user.id)]))
     else:
         markup2 = types.ReplyKeyboardMarkup(resize_keyboard=True)
