@@ -132,8 +132,10 @@ class Database:
     def change_rating(self, chat_id, rating):
         with self.connection:
             if self.cursor.execute("SELECT `rating` FROM `users` WHERE chat_id = ?", (chat_id,)).fetchall():
-                return self.cursor.execute("UPDATE `users` SET `rating` = `rating` + ? WHERE `chat_id` = ?",
-                                           (rating, chat_id))
+                return self.cursor.execute(
+                    "UPDATE `users` SET `rating` = `rating` + ? WHERE `chat_id` = ?",
+                    (rating, chat_id)
+                )
 
     @ignore_exceptions
     def is_register(self, chat_id):
@@ -151,25 +153,37 @@ class Database:
     @ignore_exceptions
     def get_rating(self, chat_id):
         with self.connection:
-            if self.cursor.execute("SELECT `rating` FROM `users` WHERE `chat_id` = ?", (chat_id,)).fetchmany():
-                return self.cursor.execute("SELECT `rating` FROM `users` WHERE `chat_id` = ?",
-                                           (chat_id,)).fetchmany()[0]
+            if self.cursor.execute(
+                    "SELECT `rating` FROM `users` WHERE `chat_id` = ?",
+                    (chat_id,)
+            ).fetchmany():
+                return self.cursor.execute(
+                    "SELECT `rating` FROM `users` WHERE `chat_id` = ?",
+                    (chat_id,)
+                ).fetchmany()[0]
             return "---"
 
     @ignore_exceptions
     def add_rating(self):
         for i in self.cursor.execute("SELECT `chat_id` FROM `users` WHERE `rating` < 500").fetchall():
             with self.connection:
-                self.cursor.execute("UPDATE `users` SET `rating` = `rating` + 200 WHERE `chat_id` = ?", (i[0],))
+                self.cursor.execute(
+                    "UPDATE `users` SET `rating` = `rating` + 200 WHERE `chat_id` = ?",
+                    (i[0],)
+                )
 
     @ignore_exceptions
     def add_report(self, report_type, chat_id):
         with self.connection:
-            return self.cursor.execute(f"UPDATE `users` SET `{report_type}` = `{report_type}` + 1 WHERE chat_id = ?",
-                                       (chat_id,))
+            return self.cursor.execute(
+                f"UPDATE `users` SET `{report_type}` = `{report_type}` + 1 WHERE chat_id = ?",
+                (chat_id,)
+            )
 
     @ignore_exceptions
     def set_rating(self, chat_id, rating):
         with self.connection:
-            return self.cursor.execute("UPDATE `users` SET `rating` = ? WHERE chat_id = ?",
-                                       (rating, chat_id))
+            return self.cursor.execute(
+                "UPDATE `users` SET `rating` = ? WHERE chat_id = ?",
+                (rating, chat_id)
+            )
