@@ -1,5 +1,5 @@
 # Machine learning model for toxicity determination
-[![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML/tree/model)
+[![Code Size](https://img.shields.io/github/languages/code-size/D1ffic00lt/anonymous-bot-with-ML/tree/model)](https://github.com/D1ffic00lt/anonymous-bot-with-ML)
 
 [English](README.md) | [Русский](READMEru.md) | [Español](READMEes.md)
 
